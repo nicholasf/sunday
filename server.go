@@ -2,11 +2,11 @@ package sunday
 
 import (
 	"log"
-	"net/http"
-	"strconv"
+//	"net/http"
+//	"strconv"
 )
 
-func Run(routes Routes, opts ...func(*Application) error) (app Application, err error) {
+func Run(routes Routes, opts ...func(Application) error) (app Application, err error) {
 	app, err =  NewApplication()
 	
 	for _, opt := range opts {
@@ -18,8 +18,8 @@ func Run(routes Routes, opts ...func(*Application) error) (app Application, err 
 		}
 	}
 
-	http.FileServer(http.Dir(app.StaticDir()))
-	
+//	http.FileServer(http.Dir(app.StaticFilesDir()))
+
 	if err != nil {
 		log.Fatal("Couldn't start Sunday: ", err.Error())
 	}
@@ -32,14 +32,16 @@ func Run(routes Routes, opts ...func(*Application) error) (app Application, err 
 //	}
 //
 //	http.Handle("/", router)
-	err =  http.ListenAndServe(":" +  strconv.Itoa(app.Port()) , nil)
-//
-//	if err != nil {
-//		log.Fatal("Could not start HTTP.", err.Error())
-//
-//	}
-//
-	log.Print("Sunday running on Port ", app.Port())
+//	log.Print("3 - ", strconv.Itoa(app.Port()))
+
+//	err =  http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
+
+	if err != nil {
+		log.Fatal("Could not start HTTP.", err.Error())
+
+	}
+
+	log.Print("Sunday running on Port ", app.Port(), " (", app.Env(), ")")
 
 	return
 }

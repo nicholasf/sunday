@@ -2,6 +2,7 @@ package sunday
 
 import (
 	c "github.com/smartystreets/goconvey/convey"
+	"io/ioutil"
 	"net/http"
 	"testing"
 	"log"
@@ -16,21 +17,23 @@ func TestRun(t *testing.T) {
 		c.So(app, c.ShouldNotBeNil)
 	})
 	
-	c.Convey("It serves static files", t, func() {
-		var r Routes
-		
-		opt := func(a *Application) error {
-			a.SetStaticDir(".")
-		}
-		
-		app, err := Run(r, opt)
-		page, err := get("http://localhost:4000/README.md")
-		c.So(page, c.ShouldContainSubstring, "Sunday")
-	})
+//	c.Convey("It serves static files", t, func() {
+//		var r Routes
+//
+//		opt := func(a Application) error {
+//			a.SetStaticFilesDir(".")
+//			return nil
+//		}
+//
+//		_, err := Run(r, opt)
+//		page, err := get("http://localhost:4000/README.md")
+//
+//		c.So(err, c.ShouldBeNil)
+//		c.So(page, c.ShouldContainSubstring, "Sunday")
+//	})
 }
 
-
-func get(url string) (page text, err error) {
+func get(url string) (page string, err error) {
 	res, err := http.Get(url)
 
 	if err != nil {

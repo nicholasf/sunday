@@ -1,32 +1,66 @@
 package sunday
 
+import(
+	"os"
+	
+)
+
 type Application interface {
 	Routes() Routes
 	Port() int
-	SetStaticDir(path string)
-	StaticDir() string
+	SetPort(port int) error
+	SetStaticFilesDir(path string) error
+	StaticFilesDir() string
+	Logger() Logger
+	SetLogger(l Logger) error
+	Env() string
+	SetEnv(env string) error
 }
 
 type app struct {
-	routes Routes
+	env string
+	logger Logger
 	opts []func(Application) error
 	port int
+	routes Routes
 	staticFilesDir string
 }
 
 //NewApp creates an App and returns it as an Application
 func NewApplication() (ap Application, err error) {
 	a := &app{
-		port: 4000,
+		port: 7000,
 		staticFilesDir: "./public",
+		logger: NewLogger(),
 	}
 	ap = Application(a)
 	return ap, nil
 }
 
-//Routes strct for the Application
+//Routes struct for the Application
 func (a *app) Routes() Routes {
 	return a.routes
+}
+
+//Returns the env
+func (a *app) Env() string {
+	if len(a.env) > 0 {
+		return a.env
+		
+	}
+	
+	a.env = os.Getenv("SUNDAY_ENV")
+
+	if len(a.env) == 0 {
+		a.env = "development"
+	}
+	
+	return a.env
+}
+
+func (a *app) SetEnv(env string) (e error) {
+	a.env = env
+	return
 }
 
 //Returns the port of the Application
@@ -45,7 +79,18 @@ func (a *app) StaticFilesDir() string {
 	return a.staticFilesDir
 }
 
+//Set the dir static files are served from 
 func (a *app) SetStaticFilesDir(dirname string) (e error) {
 	a.staticFilesDir = dirname
+	return
+}
+
+//Returns the Application Logger
+func (a *app) Logger() Logger {
+	return a.logger
+}
+
+func (a *app) SetLogger(l Logger) (e error) {
+	a.logger = l
 	return
 }
