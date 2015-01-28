@@ -6,6 +6,8 @@ import(
 )
 
 type Application interface {
+	Router() Router
+	SetRouter(r Router) error
 	Routes() Routes
 	SetRoutes(r Routes) error
 	Port() int
@@ -24,20 +26,37 @@ type app struct {
 	port int
 	routes Routes
 	staticFilesDir string
+	router Router
 }
 
 //NewApp creates an App and returns it as an Application
 func NewApplication(r Routes) (ap Application, err error) {
+	router, err := NewRouter(r)
+	
+	if err != nil {
+		return
+	}
+	
 	a := &app{
 		port: 7000,
 		staticFilesDir: "./public",
 		routes: r,
+		router: router,
 	}
-	
-	Log = NewLogger()
-	
+
 	ap = Application(a)
 	return ap, nil
+}
+
+//Routes struct for the Application
+func (a *app) Router() Router {
+	return a.router
+}
+
+//Set Routes
+func (a *app) SetRouter(r Router) (e error) {
+	a.router = r
+	return
 }
 
 //Routes struct for the Application

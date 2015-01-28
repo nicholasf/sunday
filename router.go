@@ -1,6 +1,7 @@
 package sunday
 
 import(
+	"errors"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -15,15 +16,23 @@ type router struct {
 }
 
 func NewRouter(routes Routes) (r Router, e error) {
+
+	if routes == nil {
+		e = errors.New("Routes is nil.")
+		return
+	}
+
 	ro := &router{
 		routes: routes,
 		gorillaRouter:  mux.NewRouter(),
 	}
-	
+
 	for path, controllerChain := range routes.Mappings() {
 		ro.gorillaRouter.HandleFunc(path, delegate(controllerChain...))
 	}
-	
+
+	http.Handle("/", ro.gorillaRouter)
+
 	return Router(ro), nil
 }
 

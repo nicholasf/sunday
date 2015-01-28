@@ -9,9 +9,16 @@ import (
 )
 
 func TestRun(t *testing.T) {
+
+	c.Convey("The run function reacts gracefully to nil routes", t, func() {
+		var r Routes
+		_, err := Run(r)
+		c.So(err, c.ShouldNotBeNil)
+	})
 	
 	c.Convey("The run function creates an application", t, func() {
-		var r Routes 
+		r := NewRoutes()
+		r.Get("/", func(r Request, res Response)(re Response, e error){ return res, nil })
 		app, err := Run(r)
 		c.So(err, c.ShouldBeNil)
 		c.So(app, c.ShouldNotBeNil)
