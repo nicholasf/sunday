@@ -1,27 +1,27 @@
 package sunday
 
 import (
-	"log"
 //	"net/http"
-//	"strconv"
+	"strconv"
 )
 
+var l Logger
+
 func Run(routes Routes, opts ...func(Application) error) (app Application, err error) {
-	app, err =  NewApplication()
+	app, err = NewApplication(routes)
+	l = app.Logger()
 	
 	for _, opt := range opts {
 		err = opt(app)
 		
 		if err != nil {
-			log.Fatal("Error configuring application: ", err.Error())
+			l.Fatal("Error configuring application: " + err.Error())
 			return
 		}
 	}
 
-//	http.FileServer(http.Dir(app.StaticFilesDir()))
-
 	if err != nil {
-		log.Fatal("Couldn't start Sunday: ", err.Error())
+		l.Fatal("Couldn't start Sunday: " + err.Error())
 	}
 
 //	router, err := routes.Router()
@@ -37,11 +37,11 @@ func Run(routes Routes, opts ...func(Application) error) (app Application, err e
 //	err =  http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
 
 	if err != nil {
-		log.Fatal("Could not start HTTP.", err.Error())
+		l.Fatal("Could not start HTTP." + err.Error())
 
 	}
 
-	log.Print("Sunday running on Port ", app.Port(), " (", app.Env(), ")")
+	l.Info("Sunday running on Port " + strconv.Itoa(app.Port()) + " (" + app.Env() + ")")
 
 	return
 }

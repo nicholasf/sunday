@@ -6,6 +6,8 @@ import(
 
 type Level int
 
+var Log Logger
+
 const(
 	TRACE Level = iota
 	DEBUG
@@ -24,51 +26,51 @@ type Logger interface {
 	Level() Level
 }
 
-func NewLogger() Logger {
-	l := &SimpleLogger{}
-	return Logger(l)
-}
-
 //wraps calls to golang's standard logging library
-type SimpleLogger struct {
+type logger struct {
 	level Level
 }
 
-func (s SimpleLogger) Trace(msg string) {
-	if s.level <= TRACE {
+func NewLogger() Logger {
+	l := &logger{}
+	return Logger(l)
+}
+
+func (l logger) Trace(msg string) {
+	if l.level <= TRACE {
 		log.Print("TRACE - ", msg)
 	}
 }
 
-func (s SimpleLogger) Debug(msg string) {
-	if s.level <= DEBUG {
+func (l logger) Debug(msg string) {
+	if l.level <= DEBUG {
 		log.Print("DEBUG - ", msg)
 	}
 }
 
-func (s SimpleLogger) Info(msg string) {
-	if s.level <= INFO {
+func (l logger) Info(msg string) {
+	if l.level <= INFO {
 		log.Print("INFO - ", msg)
 	}
 }
 
-func (s SimpleLogger) Error(msg string) {
-	if s.level <= ERROR {
+func (l logger) Error(msg string) {
+	if l.level <= ERROR {
 		log.Print("ERROR - ", msg)
 	}
 }
 
-func (s SimpleLogger) Fatal(msg string) {
-	if s.level <= FATAL {
+func (l logger) Fatal(msg string) {
+	if l.level <= FATAL {
 		log.Print("FATAL - ", msg)
 	}
 }
 
-func (s SimpleLogger) Level() Level {
-	return s.level
+func (l logger) Level() Level {
+	return l.level
 }
 
-func (s SimpleLogger) SetLevel(l Level) (e error) {
-	s.level = l
+func (l logger) SetLevel(le Level) (e error) {
+	l.level = le
 	return
 }

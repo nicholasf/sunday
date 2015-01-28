@@ -7,6 +7,7 @@ import(
 
 type Application interface {
 	Routes() Routes
+	SetRoutes(r Routes) error
 	Port() int
 	SetPort(port int) error
 	SetStaticFilesDir(path string) error
@@ -19,7 +20,6 @@ type Application interface {
 
 type app struct {
 	env string
-	logger Logger
 	opts []func(Application) error
 	port int
 	routes Routes
@@ -27,12 +27,15 @@ type app struct {
 }
 
 //NewApp creates an App and returns it as an Application
-func NewApplication() (ap Application, err error) {
+func NewApplication(r Routes) (ap Application, err error) {
 	a := &app{
 		port: 7000,
 		staticFilesDir: "./public",
-		logger: NewLogger(),
+		routes: r,
 	}
+	
+	Log = NewLogger()
+	
 	ap = Application(a)
 	return ap, nil
 }
@@ -40,6 +43,12 @@ func NewApplication() (ap Application, err error) {
 //Routes struct for the Application
 func (a *app) Routes() Routes {
 	return a.routes
+}
+
+//Set Routes
+func (a *app) SetRoutes(r Routes) (e error) {
+	a.routes = r
+	return
 }
 
 //Returns the env
@@ -87,10 +96,10 @@ func (a *app) SetStaticFilesDir(dirname string) (e error) {
 
 //Returns the Application Logger
 func (a *app) Logger() Logger {
-	return a.logger
+	return Log
 }
 
 func (a *app) SetLogger(l Logger) (e error) {
-	a.logger = l
+	Log = l
 	return
 }

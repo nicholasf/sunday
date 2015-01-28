@@ -1,10 +1,3 @@
 package sunday
 
-import(
-//	"net/http"
-//	"log"
-)
-
-type Controller interface {
-	
-}
+type Controller func(req Request, resp Response) (res Response, e error)
