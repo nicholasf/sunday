@@ -23,8 +23,10 @@ func TestRun(t *testing.T) {
 		c.So(err, c.ShouldBeNil)
 		c.So(app, c.ShouldNotBeNil)
 	})
-	
-//	c.Convey("It serves static files", t, func() {
+
+
+
+	//	c.Convey("It serves static files", t, func() {
 //		var r Routes
 //
 //		opt := func(a Application) error {

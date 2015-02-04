@@ -16,20 +16,14 @@ func Run(routes Routes, opts ...func(Application) error) (app Application, err e
 		return
 	}
 	
-	for _, opt := range opts {
-		err = opt(app)
-		
-		if err != nil {
-			Log.Fatal("Error configuring application: " + err.Error())
-			return
-		}
-	}
-
+	app, err = configure(app, opts)
+	
 	if err != nil {
 		Log.Fatal("Couldn't start Sunday: " + err.Error())
+		return
 	}
 
-	err = http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
+	go http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
 
 	if err != nil {
 		Log.Fatal("Could not start HTTP." + err.Error())
@@ -38,5 +32,18 @@ func Run(routes Routes, opts ...func(Application) error) (app Application, err e
 
 	Log.Info("Sunday running on Port " + strconv.Itoa(app.Port()) + " (" + app.Env() + ")")
 
+	return
+}
+
+func configure(app Application, opts ...func(Application) error) (app Application, err error) {
+	for _, opt := range opts {
+		err = opt(app)
+
+		if err != nil {
+			Log.Fatal("Error configuring application: " + err.Error())
+			return
+		}
+	}
+	
 	return
 }

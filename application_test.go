@@ -12,6 +12,6 @@ func TestApplication(t *testing.T) {
 			app, _ := Run(r)
 			c.So(app.Env(), c.ShouldEqual, "development")
 		})
-		
+
 	})
 }

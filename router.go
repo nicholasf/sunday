@@ -16,7 +16,6 @@ type router struct {
 }
 
 func NewRouter(routes Routes) (r Router, e error) {
-
 	if routes == nil {
 		e = errors.New("Routes is nil.")
 		return
