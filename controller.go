@@ -1,3 +1,10 @@
 package sunday
 
-type Controller func(req Request, resp Response) (res Response, e error)
+type Controller interface {
+    Do(r Request) (View, error)
+}
+
+type ControllerCreatorFunc func() (Controller, error)
+
+type DefaultController struct {}
+

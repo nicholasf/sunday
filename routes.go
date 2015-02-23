@@ -1,28 +1,32 @@
 package sunday
 
 type Routes interface {
-	Mappings() map[string][]Controller
-	Get(path string, c ...Controller) error
+	Mappings() map[string]Controller
+	Get(path string, c ControllerCreatorFunc) error
 }
 
 type routes struct {
-	mappings map[string][]Controller
+	mappings map[string]Controller
 }
 
 func NewRoutes() Routes {
 	r := &routes{
-		mappings:  make(map[string][]Controller),
+		mappings: make(map[string]Controller),
 		
 	}
 	return Routes(r)
 }
 
-
-func (r *routes) Mappings() map[string][]Controller {
+func (r *routes) Mappings() map[string]Controller{
 	return r.mappings
 }
 
-func (r *routes) Get(path string, c ...Controller) (err error) {
-	r.mappings[path] = c
+func (r *routes) Get(path string, c ControllerCreatorFunc) (err error) {
+	r.mappings[path], err = c()
+    
+    if err != nil {
+        panic(err)
+    }
+    
 	return
 }

@@ -4,6 +4,7 @@ import(
 	"errors"
 	"github.com/gorilla/mux"
 	"net/http"
+    "fmt"
 )
 
 type Router interface {
@@ -26,8 +27,8 @@ func NewRouter(routes Routes) (r Router, e error) {
 		gorillaRouter:  mux.NewRouter(),
 	}
 
-	for path, controllerChain := range routes.Mappings() {
-		ro.gorillaRouter.HandleFunc(path, delegate(controllerChain...))
+	for path, controller := range routes.Mappings() {
+		ro.gorillaRouter.HandleFunc(path, route(controller))
 	}
 
 	http.Handle("/", ro.gorillaRouter)
@@ -39,18 +40,17 @@ func (r *router) Routes() Routes {
 	return r.routes
 }
 
-func delegate(chain ...Controller) func(http.ResponseWriter, *http.Request) {
+func route(c Controller) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+        Log.Info(r.Method + ": " + r.RequestURI)
 		request, err := NewRequest(r)
-		response := NewResponse()
+        view, err := c.Do(request)
+        response, err := view.Render(request)
 
-		for _, c := range chain {
-			response, err = c(request, response)
-			
-			if err != nil {
-				Log.Error(err.Error())
-				break
-			}
-		}
+        if err != nil {
+            Log.Error(err.Error())
+        }
+        
+        fmt.Fprintf(w, string(response.Data()))
 	}
 }

@@ -5,8 +5,6 @@ import (
 	"strconv"
 )
 
-var l Logger
-
 func Run(routes Routes, opts ...func(Application) error) (app Application, err error) {
 	Log = NewLogger()
 	app, err = NewApplication(routes)
@@ -16,26 +14,26 @@ func Run(routes Routes, opts ...func(Application) error) (app Application, err e
 		return
 	}
 	
-	app, err = configure(app, opts)
+	app, err = configure(app, opts...)
 	
 	if err != nil {
 		Log.Fatal("Couldn't start Sunday: " + err.Error())
 		return
 	}
 
-	go http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
+    Log.Info("Sunday running on Port " + strconv.Itoa(app.Port()) + " (" + app.Env() + ")")
+
+	err = http.ListenAndServe(":" + strconv.Itoa(app.Port()) , nil)
 
 	if err != nil {
-		Log.Fatal("Could not start HTTP." + err.Error())
+		Log.Fatal("Failure starting Sunday: " + err.Error())
 
 	}
-
-	Log.Info("Sunday running on Port " + strconv.Itoa(app.Port()) + " (" + app.Env() + ")")
 
 	return
 }
 
-func configure(app Application, opts ...func(Application) error) (app Application, err error) {
+func configure(app Application, opts ...func(Application) error) (a Application, err error) {
 	for _, opt := range opts {
 		err = opt(app)
 
@@ -44,6 +42,8 @@ func configure(app Application, opts ...func(Application) error) (app Applicatio
 			return
 		}
 	}
+	
+	a = app
 	
 	return
 }
