@@ -6,7 +6,8 @@ Also inspired by the following blogpost about MVC: http://blog.codinghorror.com/
 
 WIP.
 
+- [ ] Configurable session store (some complexity). In progress
 - [ ] Param conversion on the Sunday request
-- [ ] Configurable session store
-- [ ] Static files
-- [ ] Consider model concept
+- [ ] Static files (configurable, also able to turn them off)
+- [ ] Consider model concept further
+- [ ] Consider response headers
