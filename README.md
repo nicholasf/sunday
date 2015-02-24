@@ -5,3 +5,8 @@ An itch I have to scratch. An experiment. Inspired by the conflicting impulses o
 Also inspired by the following blogpost about MVC: http://blog.codinghorror.com/understanding-model-view-controller/
 
 WIP.
+
+- [ ] Param conversion on the Sunday request
+- [ ] Configurable session store
+- [ ] Static files
+- [ ] Consider model concept

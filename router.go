@@ -44,8 +44,8 @@ func route(c Controller) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
         Log.Info(r.Method + ": " + r.RequestURI)
 		request, err := NewRequest(r)
-        view, err := c.Do(request)
-        response, err := view.Render(request)
+        model, view, err := c.Do(request)
+        response, err := view.Render(model)
 
         if err != nil {
             Log.Error(err.Error())
