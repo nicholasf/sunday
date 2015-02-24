@@ -7,5 +7,5 @@ type View interface {
 type ViewFunc func(Model) (Response, error)
 
 func (vf ViewFunc) Render(m Model) (res Response, e error) {
-    return vf(m)
+	return vf(m)
 }

@@ -4,7 +4,7 @@ import(
 	"errors"
 	"github.com/gorilla/mux"
 	"net/http"
-    "fmt"
+	"fmt"
 )
 
 type Router interface {
@@ -42,15 +42,15 @@ func (r *router) Routes() Routes {
 
 func route(c Controller) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-        Log.Info(r.Method + ": " + r.RequestURI)
+		Log.Info(r.Method + ": " + r.RequestURI)
 		request, err := NewRequest(r)
-        model, view, err := c.Do(request)
-        response, err := view.Render(model)
+		model, view, err := c.Do(request)
+		response, err := view.Render(model)
 
-        if err != nil {
-            Log.Error(err.Error())
-        }
-        
-        fmt.Fprintf(w, string(response.Data()))
+		if err != nil {
+			Log.Error(err.Error())
+		}
+
+		fmt.Fprintf(w, string(response.Data()))
 	}
 }
